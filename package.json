@@ -1,0 +1,26 @@
+{
+  "name": "whatsthatnumber-lib",
+  "version": "1.0.0",
+  "description": "A library to to map decimal numbers to common irrationals",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node main.ts"
+  },
+  "author": "",
+  "dependencies": {
+    "typescript": "^4.2.4",
+    "ts-node": "^9.1.1",
+    "jest": "^26.6.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.1",
+    "ts-jest": "^26.5.5"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  },
+  "prettier": {
+    "semi": false
+  },
+  "license": "MIT"
+}
