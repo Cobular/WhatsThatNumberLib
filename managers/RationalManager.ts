@@ -3,7 +3,7 @@ import {
   generateSternBorcotTreeToDepth, LookupManager,
   ProcessNumberResults,
   ProcessNumberResultsItem,
-  round,
+  round, sigfigs,
 } from "./Utils"
 
 export class RationalManager extends LookupManager{
@@ -26,8 +26,7 @@ export class RationalManager extends LookupManager{
     this.fillTable()
   }
 
-  lookup(input: number): ProcessNumberResults {
-    const round_target = input.toString().length - 1
+  find_many_fractions(input: number, round_target: number): ProcessNumberResults {
     let diff_of_squares: ProcessNumberResultsItem[] = []
 
     this.irrationals.forEach((irrational) => {

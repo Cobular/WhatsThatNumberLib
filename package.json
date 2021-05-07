@@ -4,7 +4,7 @@
   "description": "A library to to map decimal numbers to common irrationals",
   "main": "main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "ts-node main.ts"
   },
   "author": "",
@@ -20,7 +20,8 @@
     "prettier": "^2.2.1"
   },
   "prettier": {
-    "semi": false
+    "semi": false,
+    "printWidth": 80
   },
   "license": "MIT"
 }
