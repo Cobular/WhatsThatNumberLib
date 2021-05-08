@@ -1,4 +1,5 @@
 import * as Process from "process"
+import {IrrationalManager} from "./IrrationalManager";
 
 export interface Fraction {
   numerator: number
@@ -48,7 +49,7 @@ export function generateSternBorcotTreeToDepth(depth: number): Fraction[] {
 }
 
 export function round(input: number, size: number): number {
-  return +input.toFixed(size)
+  return +input.toPrecision(size)
 }
 
 export interface FractionTable {
@@ -66,20 +67,20 @@ export type ProcessNumberResults = [
 
 export function sigfigs(value: number) {
   if (value === 0) {
-    return 0;
+    return 0
   }
   //create absolute value and
-  var t1 = ("" + Math.abs(value));
+  const t1 = "" + Math.abs(value)
   //remove decimal point
-  var t2 = t1.replace(".","");
+  const t2 = t1.replace(".", "")
 
   //if number is represented by scientific notation,
   //the places before "e" (minus "-" and ".") are the
   //significant digits. So here we can just return the index
   //"-234.3e+50" -> "2343e+50" -> indexOf("e") === 4
-  var i = t2.indexOf("e");
+  const i = t2.indexOf("e")
   if (i > -1) {
-    return i;
+    return i
   }
 
   //if the original number had a decimal point,
@@ -87,14 +88,14 @@ export function sigfigs(value: number) {
   //0.001230000.toString() -> "0.00123" -> "000123"
   if (t2.length < t1.length) {
     // -> remove only leading zeros
-    return t2.replace(/^0+/,'').length;
+    return t2.replace(/^0+/, "").length
   }
 
   //if number did not contain decimal point,
   //leading zeros are already removed
   //000123000.toString() -> "123000"
   // -> remove only trailing zeros
-  return t2.replace(/0+$/,'').length;
+  return t2.replace(/0+$/, "").length
 }
 
 export abstract class LookupManager {

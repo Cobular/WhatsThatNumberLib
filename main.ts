@@ -1,5 +1,5 @@
+import math = require("mathjs")
 import { IrrationalManager } from "./managers/IrrationalManager"
-import { RationalManager } from "./managers/RationalManager"
 import { LookupManager, round } from "./managers/Utils"
 
 console.time("Init Irrational")
@@ -29,36 +29,4 @@ function selfTest(manager: LookupManager, round_pt: number) {
   console.log(`${round_pt},${counter / 100}`)
 }
 
-// console.time("Test Irrational")
-// for (let key of Array(20).keys()) {
-//   selfTest(irrationalManager, key)
-// }
-// console.timeEnd("Test Irrational")
-const rationalManager = new RationalManager()
-
 console.log(irrationalManager.find_many_fractions(3.14, 3))
-// console.log(rationalManager.lookup(2 * Math.sqrt(2)))
-// [
-//   [ '4/1*√2', 0 ],
-//   [ '√2*2/1', 4.930380657631324e-32 ],
-// ]
-// [
-//   [ '√2*2/1', 0 ],
-//   [ '4/1*√2', 7.888609052210118e-31 ],
-// ]
-
-// console.log(irrationalManager.irrationalLookup( 0.7071067811865475))
-// console.log(irrationalManager.irrationalLookup(0.696969696969))
-//
-// console.time("Init Rational")
-
-// console.timeEnd("Init Rational")
-//
-// console.time("Test Rational")
-// selfTest(rationalManager)
-// console.timeEnd("Test Rational")
-// //
-// console.time("Search Rational")
-// console.log(rationalManager.lookup( 2.5))
-// console.timeEnd("Search Rational")
-// console.log(rationalManager.lookup(round(0.38649325194864675, 10)))
