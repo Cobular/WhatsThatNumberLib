@@ -1,4 +1,4 @@
-import { sigfigs } from "./Utils"
+import { sigfigs } from "../src/Utils"
 
 const significantDigitCountTestMatrix: [number, number][] = [
   [1, 1],

@@ -1,13 +1,17 @@
-import {IrrationalManager} from "./IrrationalManager";
+import {IrrationalManager} from "../src/IrrationalManager";
 import math = require("mathjs");
+import {performance} from "perf_hooks";
 
 let manager: IrrationalManager
 
 beforeAll(function () {
-  manager = new IrrationalManager()
+  const startTime = performance.now();
+  manager = new IrrationalManager(true)
+  const endTime = performance.now();
+  console.log((endTime - startTime));
 })
 
-const numberConversionTestMatrix: [number, string | undefined][] = [
+const numberConversionTestMatrix: [number, string][] = [
   [3.141, "(pi*1)/1"],
   [3.14159265359, "(pi*1)/1"],
   [1.41421356237, "(√2*1)/1"],

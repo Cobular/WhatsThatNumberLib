@@ -1,51 +1,6 @@
-import * as Process from "process"
-import {IrrationalManager} from "./IrrationalManager";
-
 export interface Fraction {
   numerator: number
   denominator: number
-}
-
-export function generateSternBorcotTreeToDepth(depth: number): Fraction[] {
-  let fractions: Fraction[] = []
-
-  function recursiveGenerateSternBorcotTreeToDepth(
-    left_n: number,
-    left_d: number,
-    right_n: number,
-    right_d: number,
-    count: number = 0
-  ): void {
-    count++
-    const center_n: number = left_n + right_n
-    const center_d: number = left_d + right_d
-    fractions.push({
-      numerator: center_n,
-      denominator: center_d,
-    })
-    // Check to see if we've gone too deep
-    if (count > depth) return
-    // Check to see if we're close enough to the target
-    recursiveGenerateSternBorcotTreeToDepth(
-      center_n,
-      center_d,
-      right_n,
-      right_d,
-      count
-    )
-    recursiveGenerateSternBorcotTreeToDepth(
-      left_n,
-      left_d,
-      center_n,
-      center_d,
-      count
-    )
-    return
-  }
-
-  recursiveGenerateSternBorcotTreeToDepth(0, 1, 1, 0)
-
-  return fractions
 }
 
 export function round(input: number, size: number): number {
@@ -104,8 +59,6 @@ export abstract class LookupManager {
   protected constructor() {
     this.table = {}
   }
-
-  abstract find_many_fractions(input: number, round_target: number): ProcessNumberResults
 
   static validateAnswer(
     answer_candidate: ProcessNumberResultsItem,
@@ -190,7 +143,7 @@ export abstract class LookupManager {
     if (best_answer_difference > 1) {
       return false
     }
-    return Math.log10(answer_candidate[1]) + threshold < correction_factor;
+    return Math.log10(answer_candidate[1]) + threshold < correction_factor
   }
 
   static getFirstResult(
@@ -198,4 +151,9 @@ export abstract class LookupManager {
   ): ProcessNumberResultsItem {
     return results[0]
   }
+
+  abstract find_many_fractions(
+    input: number,
+    round_target: number
+  ): ProcessNumberResults
 }
