@@ -18,14 +18,14 @@ See https://github.com/JakeCover/WhatsThatNumberExtension for an implementation 
 Nothing like an example to see how something works:
 
 ```typescript
-import { IrrationalManager } from "whatsthatnumber-lib"
+import { IrrationalManager } from "whatsthatnumber_lib"
 
 const manager = new IrrationalManager()
 
-console.log(manager.find_best_fraction(0.5))  // 1/2
-console.log(manager.find_best_fraction(3.141))  // (pi*1)/1
-console.log(manager.find_best_fraction(3.14159265359))  // (pi*1)/1
-console.log(manager.find_best_fraction(0.14474454806))  // 10/(7*pi²)
+console.log(manager.find_best_fraction(0.5))  // [ '1/2', 0 ]
+console.log(manager.find_best_fraction(3.141))  // [ '(pi*1)/1', 9.999999999997797e-7 ]
+console.log(manager.find_best_fraction(3.14159265359))  // [ '(pi*1)/1', 0 ]
+console.log(manager.find_best_fraction(0.14474454806))  // [ '10/(7*pi²)', 0 ]
 console.log(manager.find_best_fraction(1.3337879))  // undefined
 console.log(manager.find_best_fraction(2.367331286405000678740861985716))  // undefined
 ```
@@ -33,8 +33,8 @@ console.log(manager.find_best_fraction(2.367331286405000678740861985716))  // un
 ### `new IrrationalManager(generate: boolean = false)`
 Constructs a new IrrationalManager. If generate is true, the library re-generates the set of irrational numbers on initialization. Otherwise, it loads a pre-generated set which is much faster, and 99.99% chance what you want. 
 
-### `manager.find_best_fraction(input: number): string | undefined`
-Tries to find the best fraction for a given input and returns it as a string. If it thinks the input isn't an irrational it has inside, it returns undefined. The return string is in the form `(<irrational>*<digit>)/<digit>` if the irrational is in the numerator and `<digit>/(<digit>*<irrational>)` if the irrational is in the denominator. 
+### `manager.find_best_fraction(input: number): [string, number] | undefined`
+Tries to find the best fraction for a given input and returns it as a string. If it thinks the input isn't an irrational it has inside, it returns undefined. The return `string` is in the form `(<irrational>*<digit>)/<digit>` if the irrational is in the numerator and `<digit>/(<digit>*<irrational>)` if the irrational is in the denominator, and the `number` is the squared difference between the input number and the given fraction. Zero means it's an exact match when rounded to the same number of sigfigs (or we lost the squared difference to the depths of floating point precision).
 
 **Peculiarities**:
 * Things are not yet simplified. This means `pi` is returned as `(pi*1)/1`. I'll work out some kind of symbolic simplification thing eventually.
