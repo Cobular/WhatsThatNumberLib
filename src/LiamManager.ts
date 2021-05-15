@@ -1,4 +1,5 @@
 import {
+  Fraction,
   FractionTable,
   LookupManager,
   ProcessNumberResults,
@@ -6,11 +7,10 @@ import {
   round,
   sigfigs,
 } from "./Utils"
-import {irrational_table, rational_table} from "./irrationals"
-import {generateSternBorcotTreeToDepth, generateTerminatingSternBorcotTreeToDepth} from "./SternBorcot";
+import {irrational_table, rational_table} from "./irrationals";
+import {generateScaledSternBorcotTreeToDepth} from "./SternBorcot";
 
-
-class IrrationalManager extends LookupManager {
+class LiamManager extends LookupManager {
   public static irrationals: [string, number, number][] = [
     ["pi", 3.141592653589793115997963468544185161590576171875, 1],
     ["pi²", 9.869604401089357992304940125904977321624755859375, 9],
@@ -30,7 +30,7 @@ class IrrationalManager extends LookupManager {
     super()
     this.table = {}
     this.rationalTable = {}
-    if (generate) this.fillTable(IrrationalManager.irrationals)
+    if (generate) this.fillTable(LiamManager.irrationals)
     else {
       this.table = irrational_table
       this.rationalTable = rational_table
@@ -43,7 +43,7 @@ class IrrationalManager extends LookupManager {
     const round_target = sigfigs(input)
 
     const possible_fractions = this.find_many_fractions(input, round_target)
-    const selected_fraction = IrrationalManager.getFirstResult(
+    const selected_fraction = LiamManager.getFirstResult(
         possible_fractions
     )
 
@@ -51,7 +51,7 @@ class IrrationalManager extends LookupManager {
     if (round_target < 3) {
     }
 
-    if (IrrationalManager.validateAnswer(selected_fraction, round_target)) {
+    if (LiamManager.validateAnswer(selected_fraction, round_target)) {
       return selected_fraction
     }
     return undefined
@@ -97,35 +97,12 @@ class IrrationalManager extends LookupManager {
     return diff_of_squares.slice(0, 5)
   }
 
-  selfTest() {
-    const test: [string, number][] = []
-    const numbers = Object.keys(this.table)
-    for (let i = 0; i < 50; i++) {
-      const key = numbers[Math.floor(Math.random() * numbers.length)]
-      // @ts-ignore
-      test.push([this.table[key], +key])
-    }
-    let counter = 0
-    test.forEach((value) => {
-      const input = round(value[1], 10)
-      const result = this.find_many_fractions(input, sigfigs(input))
-      if (value[0] === result[0][0]) {
-        counter += result[0][1]
-      } else {
-        console.error(
-            `Test FAILED for ${value[0]}: ${value[1]}. Best Certainty:  ${result[0][1]}`
-        )
-      }
-    })
-    console.log(counter / 50)
-  }
-
   private fillTable(
       irrationals: [string, number, number][],
-      depth: number = 5
+      depth: number = 3 //10 ** depth is the max denominator
   ) {
     // Fill with rationals
-    this.simpleRational(10)
+    this.simpleRational(2)
     // Do all the irrationals
     // irrationals.forEach((value) => {
     //   this.simpleIrrational(value[1], value[0], depth)
@@ -143,16 +120,17 @@ class IrrationalManager extends LookupManager {
 
   private simpleRational(depth: number) {
     // Fill the rational table
-    const terminating_fractions = generateTerminatingSternBorcotTreeToDepth(depth, 20)
+    const terminating_fractions = generateScaledSternBorcotTreeToDepth(depth)
     for (const fraction of terminating_fractions) {
       const result = fraction.numerator / fraction.denominator
       this.rationalTable[result] = `${fraction.numerator}/${fraction.denominator}`
     }
-    // const non_terminating_fractions = generateTerminatingSternBorcotTreeToDepth(depth, 20, false)
+    // const non_terminating_fractions = generateScaledSternBorcotTreeToDepth(depth)
     // for (const fraction of non_terminating_fractions) {
     //   const result = fraction.numerator / fraction.denominator
     //   this.table[result] = `${fraction.numerator}/${fraction.denominator}`
     // }
+    // console.log(Object.keys(this.rationalTable).length)
   }
 
   private simpleIrrationalNumerator(
@@ -161,7 +139,7 @@ class IrrationalManager extends LookupManager {
       depth: number
   ) {
     // TODO: remove redundancy on tree generation
-    const fractions = generateSternBorcotTreeToDepth(depth)
+    const fractions = generateScaledSternBorcotTreeToDepth(depth)
     for (const fraction of fractions) {
       const result = (irrational * fraction.numerator) / fraction.denominator
       this.table[
@@ -175,7 +153,7 @@ class IrrationalManager extends LookupManager {
       irrational_string: string,
       depth: number
   ) {
-    const fractions = generateSternBorcotTreeToDepth(depth)
+    const fractions = generateScaledSternBorcotTreeToDepth(depth)
     for (const fraction of fractions) {
       const result = fraction.numerator / (fraction.denominator * irrational)
       this.table[
@@ -185,4 +163,4 @@ class IrrationalManager extends LookupManager {
   }
 }
 
-export { IrrationalManager }
+export { LiamManager }

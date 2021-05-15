@@ -1,11 +1,11 @@
-import {IrrationalManager} from "../src/IrrationalManager";
+import {LiamManager} from "../src/LiamManager";
 import {performance} from "perf_hooks";
 
-let manager: IrrationalManager
+let manager: LiamManager
 
 beforeAll(function () {
   const startTime = performance.now();
-  manager = new IrrationalManager(true)
+  manager = new LiamManager(true)
   const endTime = performance.now();
   console.log((endTime - startTime));
 })

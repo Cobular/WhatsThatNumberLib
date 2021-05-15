@@ -152,8 +152,5 @@ export abstract class LookupManager {
     return results[0]
   }
 
-  abstract find_many_fractions(
-    input: number,
-    round_target: number
-  ): ProcessNumberResults
+  abstract find_best_fraction(input: number): ProcessNumberResultsItem | undefined
 }
