@@ -1,6 +1,6 @@
 {
   "name": "whatsthatnumber-lib",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A library to to map decimal numbers to common irrationals",
   "repository": {
     "type": "git",
