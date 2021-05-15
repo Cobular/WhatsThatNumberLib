@@ -2,6 +2,8 @@
   "name": "whatsthatnumber-lib",
   "version": "1.0.0",
   "description": "A library to to map decimal numbers to common irrationals",
+  "repository": "https://github.com/JakeCover/WhatsThatNumberLib",
+  "readme": "README.md",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -13,6 +13,8 @@ export function generateSternBorcotTreeToDepth(depth: number): Fraction[] {
     count++
     const center_n: number = left_n + right_n
     const center_d: number = left_d + right_d
+    if (center_n > 20 || center_d > 20)
+      return
     fractions.push({
       numerator: center_n,
       denominator: center_d,

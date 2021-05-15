@@ -17,8 +17,8 @@ const significantDigitCountTestMatrix: [number, number][] = [
 ]
 
 test.each(significantDigitCountTestMatrix)(
-    "Check sigfigs for %p with digits",
-    function (input, expected) {
-      expect(sigfigs(input)).toEqual(expected)
-    }
+  "Check sigfigs for %p with digits",
+  function (input, expected) {
+    expect(sigfigs(input)).toEqual(expected)
+  }
 )

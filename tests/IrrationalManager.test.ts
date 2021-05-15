@@ -1,13 +1,15 @@
 import {IrrationalManager} from "../src/IrrationalManager";
 import {performance} from "perf_hooks";
 
-let manager: IrrationalManager
+let manager_generated: IrrationalManager
+let manager_loaded: IrrationalManager
 
 beforeAll(function () {
   const startTime = performance.now();
-  manager = new IrrationalManager(true)
+  manager_generated = new IrrationalManager(true)
   const endTime = performance.now();
   console.log((endTime - startTime));
+  manager_loaded = new IrrationalManager()
 })
 
 const numberConversionTestMatrix: [number, string][] = [
@@ -39,12 +41,18 @@ const numberConversionTestMatrix: [number, string][] = [
   [7, "7/1"],
   [20, "20/1"],
   [0.05, "1/20"],
-  [0.09090, "1/11"],
+  [0.09090909, "1/11"],
   [0.11111, "1/9"],
 ]
 
-test.each(numberConversionTestMatrix)("Searching for %p returns %p", function (input, result) {
-  const best_fraction = manager.find_best_fraction(input)
+test.each(numberConversionTestMatrix)("Searching for %p from generated data returns %p", function (input, result) {
+  const best_fraction = manager_generated.find_best_fraction(input)
+  // @ts-ignore
+  expect(best_fraction[0]).toBe(result)
+})
+
+test.each(numberConversionTestMatrix)("Searching for %p from loaded data returns %p", function (input, result) {
+  const best_fraction = manager_loaded.find_best_fraction(input)
   // @ts-ignore
   expect(best_fraction[0]).toBe(result)
 })
@@ -68,8 +76,13 @@ const randomNumberConversionTestMatrix: [number][] = [
   [2.649934076069233590544627077179],
 ]
 
-test.each(randomNumberConversionTestMatrix)("Searching for %p returns undefined", function (input) {
-  const best_fraction = manager.find_best_fraction(input)
+test.each(randomNumberConversionTestMatrix)("Searching for %p from generated data returns undefined", function (input) {
+  const best_fraction = manager_generated.find_best_fraction(input)
+  // @ts-ignore
+  expect(best_fraction).toBeUndefined()
+})
+test.each(randomNumberConversionTestMatrix)("Searching for %p from loaded data returns undefined", function (input) {
+  const best_fraction = manager_loaded.find_best_fraction(input)
   // @ts-ignore
   expect(best_fraction).toBeUndefined()
 })

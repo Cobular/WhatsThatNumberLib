@@ -54,10 +54,10 @@ export function sigfigs(value: number) {
 }
 
 export abstract class LookupManager {
-  public table: FractionTable
+  public rationalTableTerminating: FractionTable
 
   protected constructor() {
-    this.table = {}
+    this.rationalTableTerminating = {}
   }
 
   static validateAnswer(
