@@ -5,45 +5,57 @@ import {
   ProcessNumberResultsItem,
   round,
   sigfigs,
+  master_irrationals,
+  OutputModes,
+  ResultFrac,
 } from "./Utils"
-import { irrational_table, rational_table } from "./irrationals"
+import {
+  irrational_table,
+  rational_table_non_terminating,
+  rational_table_terminating,
+} from "./irrationals"
 import {
   generateSternBorcotTreeToDepth,
   generateTerminatingSternBorcotTreeToDepth,
 } from "./SternBorcot"
+import * as fs from "fs"
+import { DefaultParser, LatexParser, ParserFunc } from "./OutputParsers"
 
 class IrrationalManager extends LookupManager {
-  public static irrationals: [string, number, number][] = [
-    ["pi", 3.141592653589793115997963468544185161590576171875, 1],
-    ["pi²", 9.869604401089357992304940125904977321624755859375, 9],
-    ["φ", 1.6180339887498949025257388711906969547271728515625, 9],
-    ["e", 2.71828182845904509079559829842764884233474731445312, 1],
-    ["e²", 7.38905609893064951876340273884125053882598876953125, 1],
-    ["√2", 1.41421356237309514547462185873882845044136047363281, 1],
-    ["√3", 1.73205080756887719317660412343684583902359008789062, 1],
-    ["√3/√2", 1.22474487139158894066781613219063729047775268554688, 1],
-    ["√5", 2.236067977499789805051477742381393909454345703125, 2],
-    ["√7", 2.64575131106459071617109657381661236286163330078125, 3],
-  ]
+  public static irrationals = master_irrationals
+  static outputModeTable: { [key in OutputModes]: ParserFunc } = {
+    latex: LatexParser,
+    default: DefaultParser,
+    object: (frac) => frac,
+  }
   table: FractionTable
   rationalTableTerminating: FractionTable
   rationalTableNonTerminating: FractionTable
+  output: ParserFunc
 
-  constructor(generate: boolean = false) {
+  constructor(generate: boolean = false, output: OutputModes = "default") {
     super()
     this.table = {}
     this.rationalTableTerminating = {}
     this.rationalTableNonTerminating = {}
+    this.output = IrrationalManager.outputModeTable[output]
     if (generate) this.fillTable(IrrationalManager.irrationals)
     else {
       this.table = irrational_table
-      this.rationalTableTerminating = rational_table
+      this.rationalTableTerminating = rational_table_terminating
+      this.rationalTableNonTerminating = rational_table_non_terminating
     }
   }
 
   // For now this is just going to iterate over the returned fractions. Later though, we'll be able to be smarter about
   // this by prioritizing certain fractions by their relative likelihood of occurring
   find_best_fraction(input: number): ProcessNumberResultsItem | undefined {
+    if (input === undefined || input === null) return undefined
+
+    if (input === 0) {
+      return ["0", 0]
+    }
+
     const round_target = sigfigs(input)
 
     const possible_fractions = this.find_many_fractions(input, round_target)
@@ -56,7 +68,10 @@ class IrrationalManager extends LookupManager {
     }
 
     if (IrrationalManager.validateAnswer(selected_fraction, round_target)) {
-      return selected_fraction
+      return [
+        this.output(selected_fraction[0] as ResultFrac),
+        selected_fraction[1],
+      ]
     }
     return undefined
   }
@@ -111,29 +126,6 @@ class IrrationalManager extends LookupManager {
     return diff_of_squares.slice(0, 5)
   }
 
-  selfTest() {
-    const test: [string, number][] = []
-    const numbers = Object.keys(this.table)
-    for (let i = 0; i < 50; i++) {
-      const key = numbers[Math.floor(Math.random() * numbers.length)]
-      // @ts-ignore
-      test.push([this.table[key], +key])
-    }
-    let counter = 0
-    test.forEach((value) => {
-      const input = round(value[1], 10)
-      const result = this.find_many_fractions(input, sigfigs(input))
-      if (value[0] === result[0][0]) {
-        counter += result[0][1]
-      } else {
-        console.error(
-          `Test FAILED for ${value[0]}: ${value[1]}. Best Certainty:  ${result[0][1]}`
-        )
-      }
-    })
-    console.log(counter / 50)
-  }
-
   private fillTable(
     irrationals: [string, number, number][],
     depth: number = 5
@@ -163,21 +155,23 @@ class IrrationalManager extends LookupManager {
     )
     for (const fraction of terminating_fractions) {
       const result = fraction.numerator / fraction.denominator
-      this.rationalTableTerminating[
-        result
-      ] = `${fraction.numerator}/${fraction.denominator}`
+      this.rationalTableTerminating[result] = {
+        numerator: [fraction.numerator],
+        denominator: [fraction.denominator],
+      }
     }
 
-    const terminating_fractions_non_terminating = generateTerminatingSternBorcotTreeToDepth(
+    const non_terminating = generateTerminatingSternBorcotTreeToDepth(
       depth,
       20,
       false
     )
-    for (const fraction of terminating_fractions_non_terminating) {
+    for (const fraction of non_terminating) {
       const result = fraction.numerator / fraction.denominator
-      this.rationalTableNonTerminating[
-        result
-      ] = `${fraction.numerator}/${fraction.denominator}`
+      this.rationalTableNonTerminating[result] = {
+        numerator: [fraction.numerator],
+        denominator: [fraction.denominator],
+      }
     }
   }
 
@@ -190,9 +184,10 @@ class IrrationalManager extends LookupManager {
     const fractions = generateSternBorcotTreeToDepth(depth)
     for (const fraction of fractions) {
       const result = (irrational * fraction.numerator) / fraction.denominator
-      this.table[
-        result
-      ] = `(${irrational_string}*${fraction.numerator})/${fraction.denominator}`
+      this.table[result] = {
+        numerator: [irrational_string, fraction.numerator],
+        denominator: [fraction.denominator],
+      }
     }
   }
 
@@ -204,9 +199,10 @@ class IrrationalManager extends LookupManager {
     const fractions = generateSternBorcotTreeToDepth(depth)
     for (const fraction of fractions) {
       const result = fraction.numerator / (fraction.denominator * irrational)
-      this.table[
-        result
-      ] = `${fraction.numerator}/(${fraction.denominator}*${irrational_string})`
+      this.table[result] = {
+        numerator: [fraction.numerator],
+        denominator: [irrational_string, fraction.denominator],
+      }
     }
   }
 }

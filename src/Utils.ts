@@ -7,11 +7,47 @@ export function round(input: number, size: number): number {
   return +input.toPrecision(size)
 }
 
+export type OutputModes = "default" | "object" | "latex"
+
 export interface FractionTable {
-  [key: number]: string
+  [key: number]: ResultFrac
 }
 
-export type ProcessNumberResultsItem = [string, number]
+export interface ResultFrac {
+  numerator: ResultFracElement[]
+  denominator: ResultFracElement[]
+}
+
+export type ResultFracElement = number | string
+
+
+const irrationals = [
+  ["pi", 3.141592653589793115997963468544185161590576171875, 1],
+  ["pi²", 9.869604401089357992304940125904977321624755859375, 9],
+  ["φ", 1.6180339887498949025257388711906969547271728515625, 9],
+  ["e", 2.71828182845904509079559829842764884233474731445312, 1],
+  ["e²", 7.38905609893064951876340273884125053882598876953125, 1],
+  ["√2", 1.41421356237309514547462185873882845044136047363281, 1],
+  ["√3", 1.73205080756887719317660412343684583902359008789062, 1],
+  ["√5", 2.236067977499789805051477742381393909454345703125, 2],
+  ["√7", 2.64575131106459071617109657381661236286163330078125, 3],
+] as const
+
+export const master_irrationals = ([
+  ...irrationals,
+  ["√3/√2", 1.22474487139158894066781613219063729047775268554688, 1],
+] as unknown) as [string, number, number][]
+
+
+// All the irrationals that converters need to handle
+export type SimpleIrrationalsType = typeof irrationals[number][0]
+export const SimpleIrrationals: SimpleIrrationalsType[] = irrationals.map(function(value,index) { return value[0]; });
+
+export function StringIsSimpleIrrational(str: string): str is SimpleIrrationalsType {
+  return SimpleIrrationals.includes(str as any);
+}
+
+export type ProcessNumberResultsItem = [string | ResultFrac, number]
 export type ProcessNumberResults = [
   ProcessNumberResultsItem,
   ProcessNumberResultsItem,
@@ -152,5 +188,7 @@ export abstract class LookupManager {
     return results[0]
   }
 
-  abstract find_best_fraction(input: number): ProcessNumberResultsItem | undefined
+  abstract find_best_fraction(
+    input: number
+  ): ProcessNumberResultsItem | undefined
 }
