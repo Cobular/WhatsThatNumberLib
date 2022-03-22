@@ -4,7 +4,7 @@
   "description": "A library to to map decimal numbers to common irrationals",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JakeCover/WhatsThatNumberLib"
+    "url": "https://github.com/Cobular/WhatsThatNumberLib"
   },
   "readme": "README.md",
   "main": "dist/main.js",

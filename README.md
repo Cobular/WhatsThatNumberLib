@@ -13,7 +13,7 @@ This brings us to...
   * It's also optimized to tell you if something probably isn't a rational fraction, meaning 1) it won't tell you that 0.459 is 459/1000 (that's just not useful information) and 2) it's intentionally limited to relitavely common irrationals.
   
 # Docs
-See https://github.com/JakeCover/WhatsThatNumberExtension for an implementation of this in a Chrome extension.
+See https://github.com/Cobular/WhatsThatNumberExtension for an implementation of this in a Chrome extension.
 
 Nothing like an example to see how something works:
 
